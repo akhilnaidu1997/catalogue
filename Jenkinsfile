@@ -1,0 +1,78 @@
+pipeline {
+    agent {
+        node {
+            label 'Agent'
+        }
+    }
+    options {
+        // timeout(time: 10, unit: 'SECONDS') 
+        disableConcurrentBuilds()
+    }
+    environment {
+        COURSE = "DevOps"
+        appVersion = "" // defining here empty and can be used for all stages
+    }
+    stages {
+        stage('Read Version') { // This is build stage as example
+            steps{
+                script {  //using scripts here is a hybrid approach
+                    def packageJSON = readJSON file: 'package.json'
+                    appVersion = packageJSON.version
+                    echo "appVersion is ${appVersion}"
+                }
+            }
+        }
+        stage('Test'){ // This is a test stage
+            environment {
+                Duration = '120hr'
+            }
+            steps {
+                script {
+                    echo "Testing......"
+                    sh """
+                        echo '${COURSE} duration is ${Duration}'
+                    """
+                }
+            }
+        }
+        stage('Deploy'){ // This is a deploy stage for practice
+            // input {
+            //     message "Should we continue?"
+            //     ok "Yes, we should."
+            //     submitter "alice,bob"
+            //     parameters {
+            //         string(name: 'PERSON', defaultValue: 'Mr Jenkins', description: 'Who should I say hello to?')
+            //     }
+            // }
+            steps {
+                script {
+                    echo "Deploying....."
+                    // sh """
+                    //     sleep 15
+                    // """
+                }
+            }
+        }
+    }
+    post {
+        always {
+            echo 'I will say hello again regardless of build result'
+            cleanWs()
+        }
+        success {
+            echo "I will run this if build is success"
+        }
+        aborted {
+            withCredentials([string(credentialsId: 'slack-webhook-url', variable: 'SLACK_URL')]) {
+                    sh '''
+                    curl -X POST -H 'Content-type: application/json' \
+                    --data '{"text":"Build Failed ✅"}' \
+                    $SLACK_URL
+                    '''
+            }
+        }
+        changed {
+            echo "I will run this if pipeline status is changed"
+        }
+    }
+}
