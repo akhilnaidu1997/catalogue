@@ -31,21 +31,12 @@ pipeline {
                 }
             }
         }
-        stage('Deploy'){ // This is a deploy stage for practice
-            // input {
-            //     message "Should we continue?"
-            //     ok "Yes, we should."
-            //     submitter "alice,bob"
-            //     parameters {
-            //         string(name: 'PERSON', defaultValue: 'Mr Jenkins', description: 'Who should I say hello to?')
-            //     }
-            // }
+        stage('Build Image'){ // This is a deploy stage for practice
             steps {
                 script {
-                    echo "Deploying....."
-                    // sh """
-                    //     sleep 15
-                    // """
+                    sh """
+                        docker build -t catalogue:${appVersion}
+                    """
                 }
             }
         }
