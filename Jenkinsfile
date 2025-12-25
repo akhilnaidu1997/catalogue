@@ -22,15 +22,11 @@ pipeline {
                 }
             }
         }
-        stage('Test'){ // This is a test stage
-            environment {
-                Duration = '120hr'
-            }
+        stage('Install Dependencies'){ // This is a test stage
             steps {
                 script {
-                    echo "Testing......"
                     sh """
-                        echo '${COURSE} duration is ${Duration}'
+                        npm install
                     """
                 }
             }
