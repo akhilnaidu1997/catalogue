@@ -58,6 +58,15 @@ pipeline {
                     '''
             }
         }
+        failure {
+            withCredentials([string(credentialsId: 'slack-webhook-url', variable: 'SLACK_URL')]) {
+                    sh '''
+                    curl -X POST -H 'Content-type: application/json' \
+                    --data '{"text":"Build Failed ✅"}' \
+                    $SLACK_URL
+                    '''
+            }
+        }
         changed {
             echo "I will run this if pipeline status is changed"
         }
