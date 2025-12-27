@@ -11,6 +11,9 @@ pipeline {
     environment {
         COURSE = "DevOps"
         appVersion = "" // defining here empty and can be used for all stages
+        ACC_ID = "799345568171"
+        Project = "roboshop"
+        Component = "catalogue"
     }
     stages {
         stage('Read Version') { // This is build stage as example
@@ -34,9 +37,13 @@ pipeline {
         stage('Build Image'){ // This is a deploy stage for practice
             steps {
                 script {
-                    sh """
-                        docker build -t catalogue:${appVersion} .
-                    """
+                    withAWS(credentials: 'aws-auth') {
+                        sh '''
+                            aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${ACC_ID}.dkr.ecr.us-east-1.amazonaws.com
+                            docker build -t ${ACC_ID}.dkr.ecr.us-east-1.amazonaws.com/${Project}/${Component}:${appVersion} .
+                            docker push ${ACC_ID}.dkr.ecr.us-east-1.amazonaws.com/${Project}/${Component}:${appVersion}
+                        '''
+                    }
                 }
             }
         }
