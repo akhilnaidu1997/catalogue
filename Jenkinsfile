@@ -45,6 +45,20 @@ pipeline {
             }
         }
     }
+    stage('Code Analysis') {
+        environment {
+            scannerHome = tool 'Sonar'
+        }
+        steps {
+            script {
+                withSonarQubeEnv('SonarQube') {
+                    sh """
+                        ${scannerHome}/bin/sonar-scanner \
+                    """
+                }
+            }
+        }
+}
     //     stage('Build Image'){ // This is a deploy stage for practice
     //         steps {
     //             script {
