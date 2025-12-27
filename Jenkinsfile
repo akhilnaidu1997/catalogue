@@ -44,7 +44,6 @@ pipeline {
                 }
             }
         }
-    }
         stage('Code Analysis') {
             environment {
                 scannerHome = tool 'Sonar'
@@ -59,6 +58,7 @@ pipeline {
                 }
             }
         }
+    }
     //     stage('Build Image'){ // This is a deploy stage for practice
     //         steps {
     //             script {
