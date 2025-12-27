@@ -44,6 +44,7 @@ pipeline {
                 }
             }
         }
+    }
     //     stage('Build Image'){ // This is a deploy stage for practice
     //         steps {
     //             script {
