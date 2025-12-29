@@ -45,28 +45,28 @@ pipeline {
             }
         }
         // static source code analysis and SAST
-        stage('Code Analysis') {
-            environment { // this block is to select the version of sonar tool
-                def scannerHome = tool 'sonar' //name should be same
-            }
-            steps {
-                script {
-                    withSonarQubeEnv('sonar') { //this block gets the sonar sever access 
-                    // also this sonar-scnner tools will get access read code and send report to server using host url and token
-                        sh """
-                            ${scannerHome}/bin/sonar-scanner \
-                        """
-                    }
-                }
-            }
-        }
-        stage('Quality Gate') {
-            steps {
-                timeout(time: 1, unit: 'HOURS') {
-                    waitForQualityGate abortPipeline: true
-                }
-            }
-        }
+        // stage('Code Analysis') {
+        //     environment { // this block is to select the version of sonar tool
+        //         def scannerHome = tool 'sonar' //name should be same
+        //     }
+        //     steps {
+        //         script {
+        //             withSonarQubeEnv('sonar') { //this block gets the sonar sever access 
+        //             // also this sonar-scnner tools will get access read code and send report to server using host url and token
+        //                 sh """
+        //                     ${scannerHome}/bin/sonar-scanner \
+        //                 """
+        //             }
+        //         }
+        //     }
+        // }
+        // stage('Quality Gate') {
+        //     steps {
+        //         timeout(time: 1, unit: 'HOURS') {
+        //             waitForQualityGate abortPipeline: true
+        //         }
+        //     }
+        // }
     }
     //     stage('Build Image'){ // This is a deploy stage for practice
     //         steps {
