@@ -108,7 +108,6 @@ pipeline {
             }
         }
 
-    }
         stage('Build Image'){ // This is a deploy stage for practice
             steps {
                 script {
@@ -122,7 +121,9 @@ pipeline {
                 }
             }
         }
+
     }
+    
     post {
         always {
             echo 'I will say hello again regardless of build result'
