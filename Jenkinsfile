@@ -121,6 +121,31 @@ pipeline {
                 }
             }
         }
+        stage('Trivy OS Scan (Local Image)') {
+            environment {
+                IMAGE = '${ACC_ID}.dkr.ecr.us-east-1.amazonaws.com/${project}/${component}:${appVersion}'
+            }
+            steps {
+                script {
+                    echo "🔍 Running Trivy OS-only scan on local image: ${IMAGE}"
+
+                    sh """
+                    docker image inspect ${IMAGE} > /dev/null
+                    """
+
+                    sh """
+                    trivy image \
+                        --vuln-type os \
+                        --severity HIGH,CRITICAL \
+                        --exit-code 1 \
+                        ${IMAGE}
+                    """
+
+                    echo "✅ Trivy scan passed — no HIGH or CRITICAL OS vulnerabilities"
+                }
+            }
+        }
+
 
     }
     
