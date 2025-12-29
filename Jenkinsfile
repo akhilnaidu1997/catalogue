@@ -123,7 +123,7 @@ pipeline {
         }
         stage('Trivy OS Scan (Local Image)') {
             environment {
-                IMAGE = '${ACC_ID}.dkr.ecr.us-east-1.amazonaws.com/${project}/${component}:${appVersion}'
+                IMAGE = "${ACC_ID}.dkr.ecr.us-east-1.amazonaws.com/${project}/${component}:${appVersion}"
             }
             steps {
                 script {
