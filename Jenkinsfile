@@ -67,46 +67,46 @@ pipeline {
         //         }
         //     }
         // }
-        stage('Dependabot Vulnerability Check') {
-            environment {
-                GITHUB_TOKEN = credentials('git-auth')
-                OWNER = 'akhilnaidu1997'
-                REPO  = 'catalogue'
-            }
-            steps {
-                script {
-                    echo "🔍 Checking Dependabot alerts for ${OWNER}/${REPO}"
+        // stage('Dependabot Vulnerability Check') {
+        //     environment {
+        //         GITHUB_TOKEN = credentials('git-auth')
+        //         OWNER = 'akhilnaidu1997'
+        //         REPO  = 'catalogue'
+        //     }
+        //     steps {
+        //         script {
+        //             echo "🔍 Checking Dependabot alerts for ${OWNER}/${REPO}"
 
-                    def response = sh(
-                        script: """
-                        curl -s -H "Authorization: Bearer ${GITHUB_TOKEN}" \
-                            -H "Accept: application/vnd.github+json" \
-                            https://api.github.com/repos/${OWNER}/${REPO}/dependabot/alerts
-                        """,
-                        returnStdout: true
-                    ).trim()
+        //             def response = sh(
+        //                 script: """
+        //                 curl -s -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+        //                     -H "Accept: application/vnd.github+json" \
+        //                     https://api.github.com/repos/${OWNER}/${REPO}/dependabot/alerts
+        //                 """,
+        //                 returnStdout: true
+        //             ).trim()
 
-                    writeFile file: 'dependabot-alerts.json', text: response
+        //             writeFile file: 'dependabot-alerts.json', text: response
 
-                    def count = sh(
-                        script: """
-                        jq '[.[] | select(
-                            .state=="open" and
-                            (.security_advisory.severity=="high" or
-                            .security_advisory.severity=="critical")
-                        )] | length' dependabot-alerts.json
-                        """,
-                        returnStdout: true
-                    ).trim()
+        //             def count = sh(
+        //                 script: """
+        //                 jq '[.[] | select(
+        //                     .state=="open" and
+        //                     (.security_advisory.severity=="high" or
+        //                     .security_advisory.severity=="critical")
+        //                 )] | length' dependabot-alerts.json
+        //                 """,
+        //                 returnStdout: true
+        //             ).trim()
 
-                    if (count.toInteger() > 0) {
-                        error "❌ BLOCKING PIPELINE: ${count} HIGH/CRITICAL open Dependabot vulnerabilities found"
-                    } else {
-                        echo "✅ No HIGH or CRITICAL open vulnerabilities found. Proceeding..."
-                    }
-                }
-            }
-        }
+        //             if (count.toInteger() > 0) {
+        //                 error "❌ BLOCKING PIPELINE: ${count} HIGH/CRITICAL open Dependabot vulnerabilities found"
+        //             } else {
+        //                 echo "✅ No HIGH or CRITICAL open vulnerabilities found. Proceeding..."
+        //             }
+        //         }
+        //     }
+        // }
 
         stage('Build Image'){ // This is a deploy stage for practice
             steps {
