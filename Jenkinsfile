@@ -44,17 +44,26 @@ pipeline {
                 }
             }
         }
+        // static source code analysis and SAST
         stage('Code Analysis') {
-            environment {
-                scannerHome = tool 'sonar'
+            environment { // this block is to select the version of sonar tool
+                scannerHome = tool 'sonar' //name should be same
             }
             steps {
                 script {
-                    withSonarQubeEnv('sonar') {
+                    withSonarQubeEnv('sonar') { //this block gets the sonar sever access 
+                    // also this sonar-scnner tools will get access read code and send report to server using host url and token
                         sh """
                             ${scannerHome}/bin/sonar-scanner \
                         """
                     }
+                }
+            }
+        }
+        stage('Quality Gate') {
+            steps {
+                timeout(time: 1, unit: 'HOURS') {
+                    waitForQualityGate abortPipeline: true
                 }
             }
         }
@@ -81,24 +90,24 @@ pipeline {
         success {
             echo "I will run this if build is success"
         }
-        aborted {
-            withCredentials([string(credentialsId: 'slack-webhook-url', variable: 'SLACK_URL')]) {
-                    sh '''
-                    curl -X POST -H 'Content-type: application/json' \
-                    --data '{"text":"Build Failed ✅"}' \
-                    $SLACK_URL
-                    '''
-            }
-        }
-        failure {
-            withCredentials([string(credentialsId: 'slack-webhook-url', variable: 'SLACK_URL')]) {
-                    sh '''
-                    curl -X POST -H 'Content-type: application/json' \
-                    --data '{"text":"Build Failed ✅"}' \
-                    $SLACK_URL
-                    '''
-            }
-        }
+        // aborted {
+        //     withCredentials([string(credentialsId: 'slack-webhook-url', variable: 'SLACK_URL')]) {
+        //             sh '''
+        //             curl -X POST -H 'Content-type: application/json' \
+        //             --data '{"text":"Build Failed ✅"}' \
+        //             $SLACK_URL
+        //             '''
+        //     }
+        // }
+        // failure {
+        //     withCredentials([string(credentialsId: 'slack-webhook-url', variable: 'SLACK_URL')]) {
+        //             sh '''
+        //             curl -X POST -H 'Content-type: application/json' \
+        //             --data '{"text":"Build Failed ✅"}' \
+        //             $SLACK_URL
+        //             '''
+        //     }
+        // }
         changed {
             echo "I will run this if pipeline status is changed"
         }
