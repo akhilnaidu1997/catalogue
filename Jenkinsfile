@@ -47,7 +47,7 @@ pipeline {
         // static source code analysis and SAST
         stage('Code Analysis') {
             environment { // this block is to select the version of sonar tool
-                scannerHome = tool 'sonar' //name should be same
+                def scannerHome = tool 'sonar' //name should be same
             }
             steps {
                 script {
