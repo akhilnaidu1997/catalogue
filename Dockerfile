@@ -4,7 +4,7 @@ COPY package.json .
 COPY *.js .
 RUN npm install
 
-FROM node:20.19.6-alpine3.22
+FROM node:20.19.5-alpine3.22
 WORKDIR /app
 COPY --from=build /app /app
 RUN addgroup -S roboshop && adduser -S roboshop -G roboshop 
