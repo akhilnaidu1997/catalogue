@@ -34,7 +34,7 @@ pipeline {
                 }
             }
         }
-        // After installing dependencies we have to run test cases
+        // After installing dependencies we have to run test cases and send report to sonarqube server
         stage('unit test'){ // This is a test stage
             steps {
                 script {
