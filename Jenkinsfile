@@ -1,11 +1,11 @@
 @Library('jenkins-shared-library') _
 
 def configmap = [
-    project : "roboshop",
-    component : "catalogue"
+    project: "roboshop",
+    component: "catalogue"
 ]
 
-if ( ! env.BRANCH_NAME.equalsIgnoreCase('main')){
+if ( ! env.BRANCH_NAME.equalsIgnoreCase('main') ){
     nodejsEKSpipeline(configmap)
 }
 else{
